@@ -84,7 +84,7 @@ def generate_keys(ssh):
         with sftp.file('/usr/local/etc/xray/public_key.json', 'w') as remote_file:
                 remote_file.write(public_key)
     stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
-    print("Ключи сгенерированы, все пользователи удалены")
+    print("Ключи сгенерированы")
 
 @staticmethod
 def find_users(ssh):
