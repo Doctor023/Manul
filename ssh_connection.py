@@ -82,12 +82,12 @@ def generate_keys(ssh):
         with sftp.file('/usr/local/etc/xray/public_key.json', 'w') as remote_file:
                 remote_file.write(public_key)
     stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
-    print("Ключи сгенерированы")
+    print("Ключи сгенерированы, все пользователи удалены")
 
 @staticmethod
 def find_users(ssh):
     try:
-        stdin, stdout, stderr = ssh.exec_command("cat /usr/loc4al/etc/xray.config.json")
+        stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/config.json")
         content = stdout.read().decode('utf-8')  
         errors = stderr.read().decode('utf-8')
         
@@ -103,8 +103,8 @@ def find_users(ssh):
         
         print(f"Всего пользователей: {len(valid_uuids)}")
         print("\nUUID:")
-        for i, uuid in enumerate(matches, 1):
-            print(f"{i}. {valid_uuids}")
+        for i, uuid in enumerate(valid_uuids, 1):
+            print(f"{i}. {uuid}")
 
     except Exception as e:
         print(f"Произошла ошибка: {str(e)}")
