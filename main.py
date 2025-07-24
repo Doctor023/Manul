@@ -16,11 +16,14 @@ while True:
 xray_installed = ssh_connection.check_xray(ssh)
 if xray_installed:
     print(colored("Xray на сервере уже установлен",'green'))
-    print("""1. Добавить пользователя
+    while True:
+        
+        print("""~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. Добавить пользователя
 2. Удалить пользователя
 3. Список пользователей
-4. Сгенерировать/Перегенерировать ключи (все пользователи будут удалены)""")
-    while True:
+4. Сгенерировать/Перегенерировать ключи (все пользователи будут удалены)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~""")
         digit = page_with_installed_xray.digit_input()
         if digit == '1':
             private_key = ssh_connection.check_private_key(ssh)
@@ -31,9 +34,19 @@ if xray_installed:
 
 
         if digit == '2':
-            print("Пользователь удален")
+             digit = print("Введите номер пользователя для удаления или напишите exit")
+             uuids = ssh_connection.find_users(ssh)
+             while True:
+                if digit is int:
+                    if digit <= len(uuids):
+                        ssh_connection.delete_user(ssh, digit, uuids)
+                    else:
+                        print("Пользователь с таким номером отсутствует")
+                break
+                 
+
         if digit == '3':
-            ssh_connection.find_users(ssh)
+            promt = ssh_connection.find_users(ssh) # promt is the value for the method to work
         if digit == '4':   
             ssh_connection.generate_keys(ssh)
 else:

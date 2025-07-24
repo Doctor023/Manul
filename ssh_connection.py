@@ -108,6 +108,7 @@ def find_users(ssh):
 
     except Exception as e:
         print(f"Произошла ошибка: {str(e)}")
+    return valid_uuids
 
 @staticmethod
 def check_private_key(ssh):
@@ -144,3 +145,13 @@ def add_user(ssh, server_ip):
         print("Необходимо вставить конфиг в VLESS клиент: " + f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&pbk=su1LPoVoA44umUYDWskmuEwAvGvx9bg8nVfiSgK3Fiw&sid=aabbccdd&type=tcp&flow=xtls-rprx-vision&encryption=none#manul")
 
         stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
+
+@staticmethod
+def delete_user(ssh, digit, uuids):
+    stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/config.json")
+    config = stdout.read().decode('utf-8')   
+    updated_config = config.replace(uuids[digit], "EMPTY", 1)
+    sftp = ssh.open_sftp()
+    with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
+        remote_file.write(updated_config)
+    print(f"Пользователь {uuids[digit]} удален")
