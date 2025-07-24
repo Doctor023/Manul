@@ -13,7 +13,67 @@
  "settings": {
  "clients": [
  {
- "id": "YOUR_UUID",
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+ 
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+ 
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+  "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+ 
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+ 
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+  "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+ 
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+  "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+ 
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+  "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+ 
+ "id": "EMPTY",
+ "flow": "xtls-rprx-vision",
+
+ "id": "EMPTY",
  "flow": "xtls-rprx-vision"
  }
  ],

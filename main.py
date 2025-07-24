@@ -23,13 +23,16 @@ if xray_installed:
     while True:
         digit = page_with_installed_xray.digit_input()
         if digit == '1':
-            print("Пользователь добавлен")
-        if digit == '2':
-            print("Пользователь удален")
-        if digit == '3':
             private_key = ssh_connection.check_private_key(ssh)
             if private_key == "YOUR_PRIVATE_KEY":
                 print("Сначала сгенерируйте ключи")
+            else:
+                ssh_connection.add_user(ssh)
+
+
+        if digit == '2':
+            print("Пользователь удален")
+        if digit == '3':
             ssh_connection.find_users(ssh)
         if digit == '4':   
             ssh_connection.generate_keys(ssh)

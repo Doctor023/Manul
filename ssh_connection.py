@@ -75,9 +75,9 @@ def generate_keys(ssh):
                 r'("privateKey"\s*:\s*")YOUR_PRIVATE_KEY(")',
                 fr'\g<1>{private_key}\g<2>',
                 config)
-            
+        print(updated_config)
         sftp = ssh.open_sftp()
-        with sftp.file('/usr/local/etc/xray.config.json', 'w') as remote_file:
+        with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
             remote_file.write(updated_config)
     print("Приватный ключ добавлен в config")
     print("Запишите публичный ключ: " + public_key)
@@ -119,4 +119,23 @@ def check_private_key(ssh):
     else:
         print("Приватный ключ не найден в конфигурации")
         return None
+    
+@staticmethod
+def add_user(ssh):
+
+    # Генерация UUID
+        stdin, stdout, stderr = ssh.exec_command("xray uuid")
+        uuid = stdout.read().decode('utf-8').strip()
+        
+        stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/config.json")
+        config = stdout.read().decode('utf-8')   
+
+
+        print(config)
+        updated_config = config.replace("EMPTY", uuid, 1)
+        print(updated_config)
+        sftp = ssh.open_sftp()
+        with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
+            remote_file.write(updated_config)
+        print(f"Успешно добавлен пользователь с UUID: {uuid}")        
     
