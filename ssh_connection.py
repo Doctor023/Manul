@@ -75,19 +75,19 @@ def generate_keys(ssh):
                 r'("privateKey"\s*:\s*")YOUR_PRIVATE_KEY(")',
                 fr'\g<1>{private_key}\g<2>',
                 config)
-        print(updated_config)
         sftp = ssh.open_sftp()
         with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
             remote_file.write(updated_config)
 
         with sftp.file('/usr/local/etc/xray/public_key.json', 'w') as remote_file:
                 remote_file.write(public_key)
-    
+    stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
+    print("Ключи сгенерированы")
 
 @staticmethod
 def find_users(ssh):
     try:
-        stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray.config.json")
+        stdin, stdout, stderr = ssh.exec_command("cat /usr/loc4al/etc/xray.config.json")
         content = stdout.read().decode('utf-8')  
         errors = stderr.read().decode('utf-8')
         
@@ -133,9 +133,7 @@ def add_user(ssh, server_ip):
         config = stdout.read().decode('utf-8')   
 
 
-        print(config)
         updated_config = config.replace("EMPTY", uuid, 1)
-        print(updated_config)
         sftp = ssh.open_sftp()
         with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
             remote_file.write(updated_config)
@@ -143,4 +141,6 @@ def add_user(ssh, server_ip):
 
         stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/public_key.json")
         public_key = stdout.read().decode('utf-8')       
-        print("Необходимо вставить конфиг в VLESS клиент: " + f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&encryption=none#manul")
+        print("Необходимо вставить конфиг в VLESS клиент: " + f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&pbk=su1LPoVoA44umUYDWskmuEwAvGvx9bg8nVfiSgK3Fiw&sid=aabbccdd&type=tcp&flow=xtls-rprx-vision&encryption=none#manul")
+
+        stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")

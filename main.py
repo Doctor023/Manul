@@ -27,7 +27,7 @@ if xray_installed:
             if private_key == "YOUR_PRIVATE_KEY":
                 print("Сначала сгенерируйте ключи")
             else:
-                ssh_connection.add_user(ssh)
+                ssh_connection.add_user(ssh, server.ip)
 
 
         if digit == '2':
