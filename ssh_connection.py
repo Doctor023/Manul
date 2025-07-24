@@ -1,6 +1,7 @@
 import paramiko
-import subprocess
-import shlex
+import re
+import json
+
 @staticmethod
 def connect_ssh(server):
     try:
@@ -51,13 +52,55 @@ def install_xray(ssh):
         print(f"Ошибка при подключении или выполнении команды: {e}")
 
 @staticmethod
-def regenerate_keys(ssh):
+def generate_keys(ssh):
     config = ""
     with open('config.json', 'r', encoding='utf-8') as file:
         for chunk in file:
             config += chunk
-            print(config)
         sftp = ssh.open_sftp()
         with sftp.file('/usr/local/etc/xray.config.json', 'w') as remote_file:
             remote_file.write(config)
         print ("Конфиг обновлен")
+    stdin, stdout, stderr = ssh.exec_command("xray x25519")
+    keys = stdout.read().decode().strip()
+    print(keys)
+
+@staticmethod
+def find_users(ssh):
+    try:
+        stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray.config.json")
+        content = stdout.read().decode('utf-8')  
+        errors = stderr.read().decode('utf-8')
+        
+        if errors:
+            print(f"Ошибка: {errors}")
+            return
+
+
+        uuid_pattern = r'"id"\s*:\s*"([^"]+)"'
+        matches = re.findall(uuid_pattern, content)
+
+        valid_uuids = [uuid for uuid in matches if len(uuid) == 36]
+        
+        print(f"Найдено ID: {len(matches)}")
+        print(f"Валидных UUID: {len(valid_uuids)}")
+        print("\nЗначения ID:")
+        for i, uuid in enumerate(matches, 1):
+            print(f"{i}. {uuid}")
+
+    except Exception as e:
+        print(f"Произошла ошибка: {str(e)}")
+
+@staticmethod
+def check_private_key(ssh):
+    stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray.config.json")
+    config = stdout.read().decode('utf-8') 
+    pattern = r'"privateKey"\s*:\s*"([^"]+)"'
+    matches = re.findall(pattern, config)
+    
+    if matches:
+        return matches[0]
+    else:
+        print("Приватный ключ не найден в конфигурации")
+        return None
+    
