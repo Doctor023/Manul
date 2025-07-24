@@ -7,23 +7,23 @@ from termcolor import colored
 logged = False
 
 while True:
-    # Подключаемся к серверу (если ещё не подключены)
+    # Connect to the server (if not already connected)
     if not logged:
         server = start_page.account_message()
         ssh = ssh_connection.connect_ssh(server)
         if ssh is False:
-            continue  # Переподключение, если SSH не удалось
+            continue  # Retry if SSH connection failed
 
-    # Проверяем, установлен ли XRay
+    # Check if XRay is installed
     xray_installed = ssh_connection.check_xray(ssh)
 
     if xray_installed:
-        logged = True  # Помечаем, что вход выполнен
+        logged = True  # Mark as logged in
         print(colored("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 'yellow'))
-        print("""1. Добавить пользователя
-2. Удалить пользователя
-3. Список пользователей
-4. Сгенерировать/Перегенерировать ключи (все пользователи будут удалены)""")
+        print("""1. Add user
+2. Delete user
+3. List users
+4. Generate/Regenerate keys (all users will be deleted)""")
         print(colored("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 'yellow'))
 
         digit = page_with_installed_xray.digit_input()
@@ -31,14 +31,14 @@ while True:
         if digit == '1':
             private_key = ssh_connection.check_private_key(ssh)
             if private_key == "YOUR_PRIVATE_KEY":
-                print("Сначала сгенерируйте ключи")
+                print("Generate keys first")
             else:
                 ssh_connection.add_user(ssh, server.ip)
 
         elif digit == '2':
             while True:
                 uuids = ssh_connection.find_users(ssh)
-                print("Введите номер пользователя для удаления или напишите exit")
+                print("Enter the user number to delete or type 'exit'")
                 digit = input()
                 if digit.lower() == 'exit':
                     break
@@ -46,22 +46,22 @@ while True:
                     digit_int = int(digit)
                     if 1 <= digit_int <= len(uuids):
                         ssh_connection.delete_user(ssh, digit_int, uuids)
-                        break  # Выход после удаления
+                        break  # Exit after deletion
                     else:
-                        print("Пользователь с таким номером отсутствует")
+                        print("No user with this number exists")
                 except ValueError:
-                    print("Пожалуйста, введите номер или 'exit'")
+                    print("Please enter a number or 'exit'")
 
         elif digit == '3':
-            ssh_connection.find_users(ssh)  # Просто выводим список
+            ssh_connection.find_users(ssh)  # Simply display the list
 
         elif digit == '4':
             ssh_connection.generate_keys(ssh)
 
     else:
-        # Если XRay не установлен, предлагаем установить
+        # If XRay is not installed, offer to install it
         digit = page_with_not_installed_xray.digit_input()
         if digit == '1':
             ssh_connection.install_xray(ssh)
             ssh_connection.generate_keys(ssh)
-            logged = True  # После установки помечаем вход как выполненный
+            logged = True  # Mark as logged in after installation
