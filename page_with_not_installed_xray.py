@@ -3,7 +3,7 @@ import os
     
 @staticmethod
 def digit_input():
-    print("1. Установить xray")
+    print("1. Установить XRay")
     while True:
         if os.name == 'nt':  # Windows
             import msvcrt

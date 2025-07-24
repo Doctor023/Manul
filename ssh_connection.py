@@ -49,7 +49,7 @@ def install_xray(ssh):
         stdin, stdout, stderr = ssh.exec_command("bash -c \"$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)\" @ install")
         output = stdout.read().decode().strip()
         print(output)
-        print("xray установлен")
+        print("XRay установлен")
     except Exception as e:
         print(f"Ошибка при подключении или выполнении команды: {e}")
 
