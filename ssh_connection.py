@@ -53,18 +53,34 @@ def install_xray(ssh):
 
 @staticmethod
 def generate_keys(ssh):
+    
+
+    stdin, stdout, stderr = ssh.exec_command("xray x25519")
+    keys = stdout.read().decode().strip()
+
+    pattern_private_key = r"Private key:\s*([A-Za-z0-9_-]+)"
+    pattern_public_key = r"Public key:\s*([A-Za-z0-9_-]+)"
+
+    match_private_key = re.search(pattern_private_key, keys)
+    private_key = match_private_key.group(1)
+
+    match_public_key = re.search(pattern_public_key, keys)
+    public_key = match_public_key.group(1)
+
     config = ""
     with open('config.json', 'r', encoding='utf-8') as file:
         for chunk in file:
             config += chunk
+            updated_config = re.sub(
+                r'("privateKey"\s*:\s*")YOUR_PRIVATE_KEY(")',
+                fr'\g<1>{private_key}\g<2>',
+                config)
+            
         sftp = ssh.open_sftp()
         with sftp.file('/usr/local/etc/xray.config.json', 'w') as remote_file:
-            remote_file.write(config)
-        print ("Конфиг обновлен")
-    stdin, stdout, stderr = ssh.exec_command("xray x25519")
-    keys = stdout.read().decode().strip()
-    print(keys)
-
+            remote_file.write(updated_config)
+    print("Приватный ключ добавлен в config")
+    print("Запишите публичный ключ: " + public_key)
 @staticmethod
 def find_users(ssh):
     try:
