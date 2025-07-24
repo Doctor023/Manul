@@ -79,8 +79,11 @@ def generate_keys(ssh):
         sftp = ssh.open_sftp()
         with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
             remote_file.write(updated_config)
-    print("Приватный ключ добавлен в config")
-    print("Запишите публичный ключ: " + public_key)
+
+        with sftp.file('/usr/local/etc/xray/public_key.json', 'w') as remote_file:
+                remote_file.write(public_key)
+    
+
 @staticmethod
 def find_users(ssh):
     try:
@@ -98,11 +101,10 @@ def find_users(ssh):
 
         valid_uuids = [uuid for uuid in matches if len(uuid) == 36]
         
-        print(f"Найдено ID: {len(matches)}")
-        print(f"Валидных UUID: {len(valid_uuids)}")
-        print("\nЗначения ID:")
+        print(f"Всего пользователей: {len(valid_uuids)}")
+        print("\nUUID:")
         for i, uuid in enumerate(matches, 1):
-            print(f"{i}. {uuid}")
+            print(f"{i}. {valid_uuids}")
 
     except Exception as e:
         print(f"Произошла ошибка: {str(e)}")
@@ -121,7 +123,7 @@ def check_private_key(ssh):
         return None
     
 @staticmethod
-def add_user(ssh):
+def add_user(ssh, server_ip):
 
     # Генерация UUID
         stdin, stdout, stderr = ssh.exec_command("xray uuid")
@@ -137,5 +139,8 @@ def add_user(ssh):
         sftp = ssh.open_sftp()
         with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
             remote_file.write(updated_config)
-        print(f"Успешно добавлен пользователь с UUID: {uuid}")        
-    
+        print(f"Успешно добавлен пользователь с UUID: {uuid}")
+
+        stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/public_key.json")
+        public_key = stdout.read().decode('utf-8')       
+        print("Необходимо вставить конфиг в VLESS клиент: " + f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&encryption=none#manul")
