@@ -4,7 +4,7 @@ import pwinput
 def account_message():
     ip = input("Введите IP адрес сервера: ").strip()
     login = input("Введите логин: ").strip()
-    password = pwinput.pwinput("Пароль: ", mask='*')
+    password = pwinput.pwinput("Введите пароль: ", mask='*')
     server = Server(ip, login, password)
     return server
 

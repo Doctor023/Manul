@@ -16,34 +16,39 @@ while True:
 xray_installed = ssh_connection.check_xray(ssh)
 if xray_installed:
     print(colored("Xray на сервере уже установлен",'green'))
-    while True:
-        
-        print("""~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1. Добавить пользователя
+    while True:     
+        print(colored("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",'yellow'))
+        print ("""1. Добавить пользователя
 2. Удалить пользователя
 3. Список пользователей
-4. Сгенерировать/Перегенерировать ключи (все пользователи будут удалены)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~""")
+4. Сгенерировать/Перегенерировать ключи (все пользователи будут удалены)""")
+        print(colored("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",'yellow'))
         digit = page_with_installed_xray.digit_input()
         if digit == '1':
             private_key = ssh_connection.check_private_key(ssh)
             if private_key == "YOUR_PRIVATE_KEY":
                 print("Сначала сгенерируйте ключи")
             else:
-                ssh_connection.add_user(ssh, server.ip)
-
+                ssh_connection.add_user(ssh, server.ip) 
 
         if digit == '2':
-             digit = print("Введите номер пользователя для удаления или напишите exit")
-             uuids = ssh_connection.find_users(ssh)
-             while True:
-                if digit is int:
-                    if digit <= len(uuids):
-                        ssh_connection.delete_user(ssh, digit, uuids)
+            while True:
+                uuids = ssh_connection.find_users(ssh)
+                print("Введите номер пользователя для удаления или напишите exit")
+                digit = input()
+                if digit.lower() == 'exit': 
+                    break
+                try:
+                    digit_int = int(digit)  
+                    if 1 <= digit_int <= len(uuids):  
+                        ssh_connection.delete_user(ssh, digit_int, uuids)  
                     else:
                         print("Пользователь с таким номером отсутствует")
-                break
-                 
+                        digit = input()  
+                except ValueError:  
+                    print("Пожалуйста, введите номер или 'exit'")
+                    digit = input()  
+
 
         if digit == '3':
             promt = ssh_connection.find_users(ssh) # promt is the value for the method to work

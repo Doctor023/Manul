@@ -1,6 +1,8 @@
 import paramiko
 import re
 import json
+from termcolor import colored, cprint
+
 
 @staticmethod
 def connect_ssh(server):
@@ -142,12 +144,16 @@ def add_user(ssh, server_ip):
 
         stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/public_key.json")
         public_key = stdout.read().decode('utf-8')       
-        print("Необходимо вставить конфиг в VLESS клиент: " + f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&pbk=su1LPoVoA44umUYDWskmuEwAvGvx9bg8nVfiSgK3Fiw&sid=aabbccdd&type=tcp&flow=xtls-rprx-vision&encryption=none#manul")
+
+        print("Необходимо вставить конфиг в VLESS клиент:")
+        print(colored(f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&pbk=su1LPoVoA44umUYDWskmuEwAvGvx9bg8nVfiSgK3Fiw&sid=aabbccdd&type=tcp&flow=xtls-rprx-vision&encryption=none#manul",'green'))
 
         stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
 
 @staticmethod
 def delete_user(ssh, digit, uuids):
+    if digit != 0:
+        digit = digit - 1
     stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/config.json")
     config = stdout.read().decode('utf-8')   
     updated_config = config.replace(uuids[digit], "EMPTY", 1)
