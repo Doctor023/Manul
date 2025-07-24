@@ -14,9 +14,18 @@ while True:
 xray_installed = ssh_connection.check_xray(ssh)
 if xray_installed:
     print("Xray установлен")
-    digit = page_with_installed_xray.digit_input()
-    if digit == 1:
-        print("Пользователь добавлен")
+    print("""1. Добавить пользователя
+    2. Удалить пользователя
+    3. Список пользователей
+    4. Перегенерировать ключ (все пользователи будут удалены)""")
+    while True:
+        digit = page_with_installed_xray.digit_input()
+        if digit == '1':
+            print("Пользователь добавлен")
+        if digit == '2':
+            print("Пользователь удален")
+        if digit == '4':   
+            ssh_connection.regenerate_keys(ssh)
 else:
     digit = page_with_not_installed_xray.digit_input()
     if digit in ('1'):

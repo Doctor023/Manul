@@ -1,0 +1,55 @@
+{
+"log": {
+"loglevel": "debug",
+
+"access": "/var/log/xray/access.log",
+ "error": "/var/log/xray/error.log"
+ },
+ "inbounds": [
+ {
+ "tag": "proxy",
+ "port": 443,
+ "protocol": "vless",
+ "settings": {
+ "clients": [
+ {
+ "id": "YOUR_UUID",
+ "flow": "xtls-rprx-vision"
+ }
+ ],
+ "decryption": "none"
+ },
+ "streamSettings": {
+ "network": "tcp",
+ "security": "reality",
+ "realitySettings": {
+ "dest": "google.com:443",
+ "serverNames": [
+ "google.com"
+ ],
+
+"privateKey": "YOUR_PRIVATE_KEY",
+"shortIds": [
+ "aabbccdd"
+ ]
+ }
+ },
+"sniffing": {
+ "enabled": true,
+ "destOverride": [
+ "http",
+ "tls",
+ "quic"
+ ],
+ "routeOnly": true
+ }
+ }
+ ],
+ "outbounds": [
+ {
+ "protocol": "freedom",
+
+"tag": "direct"
+ }
+ ]
+ }
