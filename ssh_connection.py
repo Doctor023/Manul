@@ -36,7 +36,6 @@ def check_xray(ssh):
 @staticmethod
 def install_xray(ssh):
     try:
-        print("xray устанавливается...")
         stdin, stdout, stderr = ssh.exec_command("apt update -y")
         output = stdout.read().decode().strip()
         print(output)
@@ -49,7 +48,6 @@ def install_xray(ssh):
         stdin, stdout, stderr = ssh.exec_command("bash -c \"$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)\" @ install")
         output = stdout.read().decode().strip()
         print(output)
-        print("XRay установлен")
     except Exception as e:
         print(f"Ошибка при подключении или выполнении команды: {e}")
 
