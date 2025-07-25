@@ -47,9 +47,9 @@ while True:
                     if 1 <= digit_int <= len(uuids):
                         ssh_connection.delete_user(ssh, digit_int, uuids)
                     else:
-                        print("No user with this number exists")
+                        print("Пользователя с таким номером не существует")
                 except ValueError:
-                    print("Please enter a number or 'exit'")
+                    print("Введите номер пользователя или напишите 'exit'")
 
         elif digit == '3':
             ssh_connection.find_users(ssh)  # Simply display the list
