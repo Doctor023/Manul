@@ -18,4 +18,10 @@
    
    <img width="337" height="103" alt="image" src="https://github.com/user-attachments/assets/243b5c19-359e-4a94-85b4-50262d7db159" />
 
+   Конфиг можно вставить в любой VLESS клиент на любом устройстве
+
+   Что касается nekoray, то он позволяет создать QR код кнопкой "Поделиться"
+
+<img width="846" height="64" alt="image" src="https://github.com/user-attachments/assets/a5ec8cf1-fd00-4181-a26d-3c97d30525a5" />
+
 Если вы разбираетесь в программировании и ООП, то прежде, чем критиковать мой код, уточню, я не разработчик
