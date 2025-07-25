@@ -20,7 +20,21 @@
 
    Конфиг можно вставить в любой VLESS клиент на любом устройстве
 
-   Что касается nekoray, то он позволяет создать QR код, щелкнув ПКМ по строке подключения и нажав кнопку "Поделиться"
+   Например, так выглядит nekoray
+  <img width="1919" height="537" alt="image" src="https://github.com/user-attachments/assets/0ef621f9-5cf9-4c21-a411-810d1a2232ec" />
+
+   просто нажимаем CTRL + V и у вас появляется строчка с подключением
+
+   <img width="1919" height="221" alt="image" src="https://github.com/user-attachments/assets/86d96faa-7fd3-4720-b71f-333981f34137" />
+
+    Для запуска нажимаем ПКП по строчке и выбираем запустить
+   <img width="1375" height="205" alt="image" src="https://github.com/user-attachments/assets/2c35bc80-3ae0-4bf4-9367-62fc42119d86" />
+
+  После чего нажимаем 2 галочки
+  
+  <img width="793" height="101" alt="image" src="https://github.com/user-attachments/assets/e02865f5-f059-4b2b-808f-b3f4a757af60" />
+
+   Также nekoray н позволяет создать QR код, щелкнув ПКМ по строке подключения и нажав кнопку "Поделиться"
 
 <img width="846" height="64" alt="image" src="https://github.com/user-attachments/assets/a5ec8cf1-fd00-4181-a26d-3c97d30525a5" />
 
