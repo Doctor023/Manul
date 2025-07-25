@@ -31,7 +31,7 @@
 <img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/ebd06974-f7e6-4daa-91bc-679344acf47e" />
 
 3. Жмем на значок QR кода и сканируем QR, полученный из nekoray
-<img width="647" height="571" alt="image" src="https://github.com/user-attachments/assets/b381694d-cfaf-4166-8497-82223ef278c3" />
+<img width="300" height="200" alt="image" src="https://github.com/user-attachments/assets/b381694d-cfaf-4166-8497-82223ef278c3" />
    
 4. Конфиг будет добавлен автоматически, вам нужно выбрать его и нажать Connect
 
