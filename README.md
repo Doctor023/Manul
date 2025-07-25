@@ -34,7 +34,9 @@
   
   <img width="793" height="101" alt="image" src="https://github.com/user-attachments/assets/e02865f5-f059-4b2b-808f-b3f4a757af60" />
 
-   Также nekoray н позволяет создать QR код, щелкнув ПКМ по строке подключения и нажав кнопку "Поделиться"
+  Готово!
+
+Также nekoray н позволяет создать QR код, щелкнув ПКМ по строке подключения и нажав кнопку "Поделиться"
 
 <img width="846" height="64" alt="image" src="https://github.com/user-attachments/assets/a5ec8cf1-fd00-4181-a26d-3c97d30525a5" />
 
