@@ -24,5 +24,14 @@
 
 <img width="846" height="64" alt="image" src="https://github.com/user-attachments/assets/a5ec8cf1-fd00-4181-a26d-3c97d30525a5" />
 
+Покажу как подключить VPN на IOS на примере клиента v2box:
 
+1. Собственно, скачиваем v2box
+2. Открываем, заходим в Configs снизу
+<img width="1179" height="497" alt="image" src="https://github.com/user-attachments/assets/ebd06974-f7e6-4daa-91bc-679344acf47e" />
+3. Жмем на значок QR кода и сканируем QR, полученный из nekoray
+   <img width="647" height="571" alt="image" src="https://github.com/user-attachments/assets/b381694d-cfaf-4166-8497-82223ef278c3" />
+4. Конфиг будет добавлен автоматически, вам нужно выбрать его и нажать Connect
+
+   
 Если вы разбираетесь в программировании и ООП, то прежде, чем критиковать мой код, уточню, я не разработчик
