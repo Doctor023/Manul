@@ -24,4 +24,5 @@
 
 <img width="846" height="64" alt="image" src="https://github.com/user-attachments/assets/a5ec8cf1-fd00-4181-a26d-3c97d30525a5" />
 
+
 Если вы разбираетесь в программировании и ООП, то прежде, чем критиковать мой код, уточню, я не разработчик
