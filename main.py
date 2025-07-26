@@ -2,7 +2,7 @@ import start_page
 import ssh_connection
 import page_with_not_installed_xray
 import page_with_installed_xray
-from termcolor import colored
+from colorama import  init, Fore
 
 logged = False
 
@@ -19,12 +19,12 @@ while True:
 
     if xray_installed:
         logged = True  # Mark as logged in
-        print(colored("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 'yellow'))
+        print(Fore.YELLOW + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" + Fore.RESET)
         print("""1. Добавить пользователя
 2. Удалить пользователя
 3. Список пользователей
 4. Сгенерировать/Перегенерировать ключи (все пользователи будут удалены)""")
-        print(colored("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 'yellow'))
+        print(Fore.YELLOW + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" + Fore.RESET)
 
         digit = page_with_installed_xray.digit_input()
 
@@ -73,8 +73,8 @@ while True:
                     ssh_connection.generate_keys(ssh)
 
                     logged = True  # Mark successful installation
-                    print(colored("XRay успешно установлен и настроен!", "green"))
+                    print(Fore.GREEN + "XRay успешно установлен и настроен!" + Fore.RESET)
 
                 except Exception as e:
-                    print(colored(f"Ошибка: {str(e)}", "red"))
+                    print(Fore.RED + f"Ошибка: {str(e)}" + Fore.RESET)
                     logged = False
