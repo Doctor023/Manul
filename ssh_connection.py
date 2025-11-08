@@ -56,8 +56,8 @@ def generate_keys(ssh):
     stdin, stdout, stderr = ssh.exec_command("xray x25519")
     keys = stdout.read().decode().strip()
 
-    pattern_private_key = r"Private key:\s*([A-Za-z0-9_-]+)"
-    pattern_public_key = r"Public key:\s*([A-Za-z0-9_-]+)"
+    pattern_private_key = r"PrivateKey:\s*([A-Za-z0-9_-]+)"
+    pattern_public_key = r"Password:\s*([A-Za-z0-9_-]+)"
 
     match_private_key = re.search(pattern_private_key, keys)
     private_key = match_private_key.group(1)
@@ -110,7 +110,7 @@ def find_users(ssh):
 
 @staticmethod
 def check_private_key(ssh):
-    stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray.config.json")
+    stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/config.json")
     config = stdout.read().decode('utf-8') 
     pattern = r'"privateKey"\s*:\s*"([^"]+)"'
     matches = re.findall(pattern, config)
@@ -141,7 +141,7 @@ def add_user(ssh, server_ip):
         stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/public_key.json")
         public_key = stdout.read().decode('utf-8')       
 
-        print("Необходимо вставить конфиг в VLESS клиент:")
+        print("Необходимо вставить ссылку в VLESS клиент:")
         print(Fore.GREEN + f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&pbk=su1LPoVoA44umUYDWskmuEwAvGvx9bg8nVfiSgK3Fiw&sid=aabbccdd&type=tcp&flow=xtls-rprx-vision&encryption=none#manul" + Fore.RESET)
 
         stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
