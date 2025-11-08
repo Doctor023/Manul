@@ -1,6 +1,7 @@
 import paramiko
 import re
 from colorama import  init, Fore
+import json
 
 @staticmethod
 def connect_ssh(server):
@@ -39,13 +40,17 @@ def install_xray(ssh):
         print(output)
         
 
-        tdin, stdout, stderr = ssh.exec_command("apt install curl -y")
+        stdin, stdout, stderr = ssh.exec_command("apt install curl -y")
         output = stdout.read().decode().strip()
 
 
         stdin, stdout, stderr = ssh.exec_command("bash -c \"$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)\" @ install")
         output = stdout.read().decode().strip()
         print(output)
+
+        stdin, stdout, stderr = ssh.exec_command("touch /usr/local/etc/xray/users.json") # add users.json 
+        stdin, stdout, stderr = ssh.exec_command('echo "{}" > /usr/local/etc/xray/users.json')
+
     except Exception as e:
         print(f"Ошибка при подключении или выполнении команды: {e}")
 
@@ -79,34 +84,31 @@ def generate_keys(ssh):
 
         with sftp.file('/usr/local/etc/xray/public_key.json', 'w') as remote_file:
                 remote_file.write(public_key)
+
+    stdin, stdout, stderr = ssh.exec_command("rm /usr/local/etc/xray/users.json") 
+    stdin, stdout, stderr = ssh.exec_command("touch /usr/local/etc/xray/users.json") # add users.json 
+    stdin, stdout, stderr = ssh.exec_command('echo "{}" > /usr/local/etc/xray/users.json')
+
     stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
     print("Ключи сгенерированы")
 
 @staticmethod
 def find_users(ssh):
-    try:
-        stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/config.json")
-        content = stdout.read().decode('utf-8')  
-        errors = stderr.read().decode('utf-8')
-        
-        if errors:
-            print(f"Ошибка: {errors}")
-            return
 
-
-        uuid_pattern = r'"id"\s*:\s*"([^"]+)"'
-        matches = re.findall(uuid_pattern, content)
-
-        valid_uuids = [uuid for uuid in matches if len(uuid) == 36]
-        
-        print(f"Всего пользователей: {len(valid_uuids)}")
-        print("\nUUID:")
-        for i, uuid in enumerate(valid_uuids, 1):
-            print(f"{i}. {uuid}")
-
-    except Exception as e:
-        print(f"Произошла ошибка: {str(e)}")
-    return valid_uuids
+    existing_data = json
+    sftp = ssh.open_sftp()
+    with sftp.file('/usr/local/etc/xray/users.json', 'r') as remote_file: 
+            existing_data = json.load(remote_file)
+    users_count = len(existing_data)
+    if users_count != 0:
+        print(f"Всего пользователей: {users_count}")
+        i = 1
+        for uuid, username in existing_data.items():
+            print(f"{i}. {username}")
+            i = i + 1
+    else:
+        print("Всего пользователей: 0")
+    return existing_data
 
 @staticmethod
 def check_private_key(ssh):
@@ -122,9 +124,8 @@ def check_private_key(ssh):
         return None
     
 @staticmethod
-def add_user(ssh, server_ip):
+def add_user(ssh, server_ip, user):
 
-    # Генерация UUID
         stdin, stdout, stderr = ssh.exec_command("xray uuid")
         uuid = stdout.read().decode('utf-8').strip()
         
@@ -136,24 +137,47 @@ def add_user(ssh, server_ip):
         sftp = ssh.open_sftp()
         with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
             remote_file.write(updated_config)
-        print(f"Успешно добавлен пользователь с UUID: {uuid}")
+
+        user_dict = {uuid : user}     
+        with sftp.file('/usr/local/etc/xray/users.json', 'r') as remote_file: 
+            existing_data = json.load(remote_file)
+            existing_data.update(user_dict)
+
+        with sftp.file('/usr/local/etc/xray/users.json', 'w') as remote_file: # changes in users.json
+            json_str = json.dumps(existing_data, ensure_ascii=False, indent=2)
+            remote_file.write(json_str)
+
+
+        print(f"Успешно добавлен пользователь {user} с UUID: {uuid}")
 
         stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/public_key.json")
         public_key = stdout.read().decode('utf-8')       
 
         print("Необходимо вставить ссылку в VLESS клиент:")
-        print(Fore.GREEN + f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&pbk=su1LPoVoA44umUYDWskmuEwAvGvx9bg8nVfiSgK3Fiw&sid=aabbccdd&type=tcp&flow=xtls-rprx-vision&encryption=none#manul" + Fore.RESET)
+        print(Fore.GREEN + f"vless://{uuid}@{server_ip}:443?security=reality&sni=google.com&alpn=h2&fp=chrome&pbk={public_key}&pbk=su1LPoVoA44umUYDWskmuEwAvGvx9bg8nVfiSgK3Fiw&sid=aabbccdd&type=tcp&flow=xtls-rprx-vision&encryption=none#{user}" + Fore.RESET)
 
         stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
 
 @staticmethod
-def delete_user(ssh, digit, uuids):
+def delete_user(ssh, digit, users):
     if digit != 0:
         digit = digit - 1
+
+    items_list = list(users.items())
+    uuid, username = items_list[digit]
     stdin, stdout, stderr = ssh.exec_command("cat /usr/local/etc/xray/config.json")
     config = stdout.read().decode('utf-8')   
-    updated_config = config.replace(uuids[digit], "EMPTY", 1)
+    updated_config = config.replace(uuid, "EMPTY", 1)
     sftp = ssh.open_sftp()
     with sftp.file('/usr/local/etc/xray/config.json', 'w') as remote_file:
         remote_file.write(updated_config)
-    print(f"Пользователь {uuids[digit]} удален")
+    
+    users.pop(uuid)
+        
+    with sftp.file('/usr/local/etc/xray/users.json', 'w') as remote_file:
+        json_str = json.dumps(users, ensure_ascii=False, indent=2)
+        remote_file.write(json_str)
+
+    stdin, stdout, stderr = ssh.exec_command("systemctl restart xray")
+
+    print(f"Пользователь {username} удален")

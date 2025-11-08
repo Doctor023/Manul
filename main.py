@@ -31,21 +31,22 @@ while True:
         if digit == '1':
             private_key = ssh_connection.check_private_key(ssh)
             if private_key == "YOUR_PRIVATE_KEY":
-                print("Generate keys first")
+                print("Сначала сгенерируйте ключи")
             else:
-                ssh_connection.add_user(ssh, server.ip)
+                user = input("Введите имя пользователя: ")
+                ssh_connection.add_user(ssh, server.ip, user)
 
         elif digit == '2':
             while True:
-                uuids = ssh_connection.find_users(ssh)
+                users = ssh_connection.find_users(ssh)
                 print("Введите номер пользователя или напишите exit, чтобы выйти в меню'")
                 digit = input()
                 if digit.lower() == 'exit':
                     break
                 try:
                     digit_int = int(digit)
-                    if 1 <= digit_int <= len(uuids):
-                        ssh_connection.delete_user(ssh, digit_int, uuids)
+                    if 1 <= digit_int <= len(users):
+                        ssh_connection.delete_user(ssh, digit_int, users)
                     else:
                         print("Пользователя с таким номером не существует")
                 except ValueError:
